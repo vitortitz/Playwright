@@ -8,3 +8,9 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# BDD (playwright-bdd)
+.features-gen/
+
+# Ferramentas locais
+.claude/
