@@ -11,6 +11,10 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+
+export const UI_BASE_URL = process.env.UI_BASE_URL ?? 'https://www.saucedemo.com';
+export const API_BASE_URL =
+  process.env.API_BASE_URL ?? 'https://restful-booker.herokuapp.com';
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
@@ -22,58 +26,49 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['list'], ['html', { open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: 'https://www.saucedemo.com',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    actionTimeout: 10_000,
+    navigationTimeout: 15_000,
+    /* Artefatos de diagnóstico apenas quando um teste falha */
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'api',
+      testDir: './tests/api',
+      use: {
+        baseURL: API_BASE_URL,
+      },
     },
-
+    {
+      name: 'chromium',
+      testDir: './tests/ui',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: UI_BASE_URL,
+      },
+    },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      testDir: './tests/ui',
+      use: {
+        ...devices['Desktop Firefox'],
+        baseURL: UI_BASE_URL,
+      },
     },
-
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      testDir: './tests/ui',
+      use: {
+        ...devices['Desktop Safari'],
+        baseURL: UI_BASE_URL,
+      },
     },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
