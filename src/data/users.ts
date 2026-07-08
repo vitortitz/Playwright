@@ -3,7 +3,7 @@ export interface User {
     password: string;
 }
 
-const PASSWORD = process.env.SAUCE_PASSWORD as string ? 'secret_sauce'
+const PASSWORD = process.env.SAUCE_PASSWORD as string ?? 'secret_sauce'
 
 export const users = {
     standard: { username: 'standard_user', password: PASSWORD },
