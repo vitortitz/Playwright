@@ -4,6 +4,7 @@ import { InventoryPage } from '@pages/inventory.page'
 import { CartPage } from '@pages/cart.page';
 import { users } from '@data/users'
 import { CheckoutPage } from '@pages/checkout.page';
+import { BookingApi } from '@api/booking.api';
 /**
  * Custom fixtures.
  *
@@ -18,6 +19,7 @@ type Fixtures = {
     loggedInInventory: InventoryPage;
     cartPage: CartPage
     checkoutPage: CheckoutPage
+    bookingApi: BookingApi
 };
 
 export const test = base.extend<Fixtures>({
@@ -34,6 +36,12 @@ export const test = base.extend<Fixtures>({
     },
     checkoutPage: async ({ page }, use) => {
         await use(new CheckoutPage(page));
+    },
+
+    bookingApi: async ({ request }, use) => {
+        const api = new BookingApi(request);
+        await api.authenticate();
+        await use(api);
     },
 
     loggedInInventory: async ({ page }, use) => {
