@@ -1,6 +1,6 @@
 export const apiCredentials = {
     username: process.env.API_USERNAME ?? 'admin',
-    password: process.env.API_PASSWORD ?? 'pasword123'
+    password: process.env.API_PASSWORD ?? 'password123'
 }
 
 export interface BookingDates {
